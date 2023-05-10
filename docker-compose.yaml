@@ -1,0 +1,29 @@
+version: "3.10"
+
+services:
+ 
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pgdb-data:/var/lib/postgresql/data
+
+  qrt:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8080
+    volumes:
+      - .:/code
+    image: qrt-image
+    container_name: qrt-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      
+volumes:
+  pgdb-data:
+    driver: local
+
